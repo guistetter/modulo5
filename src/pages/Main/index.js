@@ -1,5 +1,10 @@
 import React from "react";
-function Main() {
-  return <h1>Main</h1>;
+import { Title } from "./styles";
+export default function Main() {
+  return (
+    <Title error={true}>
+      Main
+      <small>Menor</small>
+    </Title>
+  );
 }
-export default Main;
