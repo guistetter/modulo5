@@ -1,27 +1,30 @@
 import React, { Component } from "react";
 import { FaGithubAlt, FaPlus, FaSpinner } from "react-icons/fa";
-import { Form, Container, SubmitButton, List} from "./styles";
-import { Link} from "react-router-dom"
-import api from "../../services/api"
+import { Link } from "react-router-dom";
+
+import api from "../../services/api";
+
+import Container from "../../components/Container";
+import { Form, SubmitButton, List } from "./styles";
 
 export default class Main extends Component {
   state = {
     newRepo: "",
-    repositories:[],
+    repositories: [],
     loading: false,
   };
   //carregar dados  do local storage
-  componentDidMount(){
+  componentDidMount() {
     const repositories = localStorage.getItem("repositories");
-    if(repositories){
-      this.setState({repositories: JSON.parse(repositories)})
+    if (repositories) {
+      this.setState({ repositories: JSON.parse(repositories) });
     }
   }
   //salver dados do localStorage
-  componentDidUpdate(_, prevState){
-    const { repositories} = this.state
-    if(prevState.repositories !== repositories){
-      localStorage.setItem("repositories", JSON.stringify(repositories))
+  componentDidUpdate(_, prevState) {
+    const { repositories } = this.state;
+    if (prevState.repositories !== repositories) {
+      localStorage.setItem("repositories", JSON.stringify(repositories));
     }
   }
 
@@ -31,18 +34,24 @@ export default class Main extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-   this.setState({loading: true})
-    const { newRepo, repositories } = this.state
-    const response = await api.get(`/repos/${newRepo}`)
-    console.log(response.data)
+
+    this.setState({ loading: true });
+
+    const { newRepo, repositories } = this.state;
+    const response = await api.get(`/repos/${newRepo}`);
+    console.log(response.data);
+
     const data = {
-      name: response.data.full_name
-    }
-    this.setState({repositories:[...repositories,data],
-    newRepo:"",
-    loading: false
-    })
+      name: response.data.full_name,
+    };
+
+    this.setState({
+      repositories: [...repositories, data],
+      newRepo: "",
+      loading: false,
+    });
   };
+
   render() {
     const { newRepo, repositories, loading } = this.state;
     return (
@@ -61,16 +70,20 @@ export default class Main extends Component {
           />
 
           <SubmitButton loading={loading}>
-            {loading ? <FaSpinner color="#FFF" size={14}/> : 
-            <FaPlus color="#FFF" size={14} />  }
-            
+            {loading ? (
+              <FaSpinner color="#FFF" size={14} />
+            ) : (
+              <FaPlus color="#FFF" size={14} />
+            )}
           </SubmitButton>
         </Form>
         <List>
-          {repositories.map(repository =>(
+          {repositories.map((repository) => (
             <li key={repository.name}>
               <span>{repository.name}</span>
-              <Link to={`/repository/${encodeURIComponent(repository.name)}`}>Detalhes</Link>
+              <Link to={`/repository/${encodeURIComponent(repository.name)}`}>
+                Detalhes
+              </Link>
             </li>
           ))}
         </List>
